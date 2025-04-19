@@ -1,0 +1,34 @@
+from airflow import DAG
+from airflow.providers.postgres.operators.postgres import PostgresOperator
+from airflow.utils.dates import days_ago
+
+default_args = {
+    'owner': 'airflow',
+    'start_date': days_ago(1),
+    'email_on_failure': False,
+    'email_on_retry': False,
+    'retries': 1,
+}
+
+dag = DAG(
+    'insert_12_29',
+    default_args=default_args,
+    description='Простой DAG для создания таблицы и вставки значений',
+    schedule_interval=None,  
+)
+
+insert_values_sql = """
+INSERT INTO t5 (name, value) VALUES 
+('first_value', 1),
+('second_value', 2),
+('third_value', 3);
+"""
+
+insert_values = PostgresOperator(
+    task_id='insert_values',
+    postgres_conn_id='aaa',  # Измените на идентификатор вашего подключения
+    sql=insert_values_sql,
+    dag=dag,
+)
+
+insert_values

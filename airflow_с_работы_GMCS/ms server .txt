@@ -1,0 +1,22 @@
+from airflow import DAG
+from airflow.providers.microsoft.mssql.operators.mssql import MsSqlOperator
+from airflow.utils.dates import days_ago
+
+default_args = {
+    'owner': 'airflow',
+}
+
+with DAG(
+    dag_id='_mssql_cinema_collection_15:28',
+    default_args=default_args,
+    start_date=days_ago(1),
+    schedule_interval=None,
+) as dag:
+
+    run_query = MsSqlOperator(
+        task_id='run_query',
+        mssql_conn_id='bbb',  # Используйте ID подключения, который вы создали
+        sql='SELECT TOP 10 * FROM movies',  # Замените 'your_table_name' на имя вашей таблицы
+    )
+
+    run_query
